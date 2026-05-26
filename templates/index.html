@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schützenverein Herbrechtingen</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: white;
+            overflow-x: hidden;
+        }
+
+        /* ===== HERO ===== */
+
+        .hero {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            background: black;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: black;
+            opacity: 0;
+            transition: opacity 0.8s ease;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        /* ===== ARROWS ===== */
+
+        .btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+
+            background: white;
+            border: 1px solid #ddd;
+
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .left { left: 15px; }
+        .right { right: 15px; }
+
+        /* ===== FULLSCREEN ===== */
+
+        .fullscreen {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10;
+
+            background: white;
+            border: 1px solid #ddd;
+
+            padding: 10px 15px;
+            border-radius: 10px;
+
+            cursor: pointer;
+        }
+
+        .exit-fullscreen {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 10;
+
+            background: black;
+            color: white;
+
+            border: none;
+
+            padding: 10px 15px;
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            display: none;
+        }
+
+        /* ===== INFO ===== */
+
+        .info {
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .info h1 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        .info p {
+            font-size: 18px;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        /* ===== CTA ===== */
+
+        .cta {
+            margin-top: 40px;
+            display: inline-block;
+            border: 2px solid #111;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .cta h2 {
+            margin-bottom: 10px;
+        }
+
+        .cta button {
+            margin-top: 10px;
+            padding: 10px 18px;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        audio {
+            display: none;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+
+    {% for bild in bilder %}
+    <img class="slide {% if loop.index == 1 %}active{% endif %}"
+         src="{{ url_for('static', filename='bilder/' + bild) }}">
+    {% endfor %}
+
+    <button class="btn left" onclick="prevSlide()">❮</button>
+    <button class="btn right" onclick="nextSlide()">❯</button>
+
+    <button class="fullscreen" onclick="openFullscreen()">Vollbild</button>
+
+    <button class="exit-fullscreen" id="exitBtn" onclick="closeFullscreen()">
+        Schließen
+    </button>
+
+</section>
+
+<!-- INFO -->
+<section class="info">
+
+    <h1>Schützenverein Herbrechtingen</h1>
+
+    <p>Wolfsbühlweg 27, 89542 Herbrechtingen</p>
+
+    <p>Dienstag: 19–22 Uhr | Samstag: 15–18 Uhr | Sonntag: 09:30–12 Uhr</p>
+
+    <p>
+        <a href="https://www.sg-herbrechtingen.de" target="_blank">
+            www.sg-herbrechtingen.de
+        </a>
+    </p>
+
+    <div class="cta">
+        <h2>Komm vorbei!</h2>
+        <p>Erlebe Schießsport und Gemeinschaft live.</p>
+        <button onclick="window.location.href='https://www.sg-herbrechtingen.de'">
+            Jetzt informieren
+        </button>
+    </div>
+
+</section>
+
+<!-- MUSIC -->
+<audio id="musik" loop>
+    <source src="{{ url_for('static', filename='music/song.mp3') }}" type="audio/mpeg">
+</audio>
+
+<script>
+
+let slides = document.querySelectorAll(".slide");
+let index = 0;
+
+/* AUTO SLIDE */
+setInterval(() => {
+    nextSlide();
+}, 3000);
+
+function showSlide(i) {
+    slides.forEach(s => s.classList.remove("active"));
+    slides[i].classList.add("active");
+}
+
+function nextSlide() {
+    index++;
+    if (index >= slides.length) index = 0;
+    showSlide(index);
+}
+
+function prevSlide() {
+    index--;
+    if (index < 0) index = slides.length - 1;
+    showSlide(index);
+}
+
+/* FULLSCREEN + MUSIC (FIX) */
+
+function openFullscreen() {
+
+    let el = document.getElementById("hero");
+    let musik = document.getElementById("musik");
+
+    if (el.requestFullscreen) {
+        el.requestFullscreen();
+    }
+
+    musik.play(); // <- WICHTIG: direkt im Klick
+
+    document.getElementById("exitBtn").style.display = "block";
+}
+
+function closeFullscreen() {
+
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    }
+
+    document.getElementById("exitBtn").style.display = "none";
+}
+
+/* EXIT FIX wenn ESC gedrückt */
+document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) {
+        document.getElementById("exitBtn").style.display = "none";
+    }
+});
+
+</script>
+
+</body>
+</html>
