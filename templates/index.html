@@ -62,8 +62,13 @@
             cursor: pointer;
         }
 
-        .left { left: 15px; }
-        .right { right: 15px; }
+        .left {
+            left: 15px;
+        }
+
+        .right {
+            right: 15px;
+        }
 
         /* ===== FULLSCREEN ===== */
 
@@ -80,25 +85,7 @@
             border-radius: 10px;
 
             cursor: pointer;
-        }
-
-        .exit-fullscreen {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            z-index: 10;
-
-            background: black;
-            color: white;
-
-            border: none;
-
-            padding: 10px 15px;
-            border-radius: 10px;
-
-            cursor: pointer;
-
-            display: none;
+            font-size: 16px;
         }
 
         /* ===== INFO ===== */
@@ -163,10 +150,8 @@
     <button class="btn left" onclick="prevSlide()">❮</button>
     <button class="btn right" onclick="nextSlide()">❯</button>
 
-    <button class="fullscreen" onclick="openFullscreen()">Vollbild</button>
-
-    <button class="exit-fullscreen" id="exitBtn" onclick="closeFullscreen()">
-        Schließen
+    <button class="fullscreen" id="fullscreenBtn" onclick="toggleFullscreen()">
+        Vollbild
     </button>
 
 </section>
@@ -189,6 +174,7 @@
     <div class="cta">
         <h2>Komm vorbei!</h2>
         <p>Erlebe Schießsport und Gemeinschaft live.</p>
+
         <button onclick="window.location.href='https://www.sg-herbrechtingen.de'">
             Jetzt informieren
         </button>
@@ -207,57 +193,92 @@ let slides = document.querySelectorAll(".slide");
 let index = 0;
 
 /* AUTO SLIDE */
+
 setInterval(() => {
     nextSlide();
 }, 3000);
 
+/* SHOW SLIDE */
+
 function showSlide(i) {
+
     slides.forEach(s => s.classList.remove("active"));
+
     slides[i].classList.add("active");
 }
 
+/* NEXT */
+
 function nextSlide() {
+
     index++;
-    if (index >= slides.length) index = 0;
+
+    if (index >= slides.length) {
+        index = 0;
+    }
+
     showSlide(index);
 }
+
+/* PREV */
 
 function prevSlide() {
+
     index--;
-    if (index < 0) index = slides.length - 1;
+
+    if (index < 0) {
+        index = slides.length - 1;
+    }
+
     showSlide(index);
 }
 
-/* FULLSCREEN + MUSIC (FIX) */
+/* FULLSCREEN TOGGLE */
 
-function openFullscreen() {
+function toggleFullscreen() {
 
     let el = document.getElementById("hero");
     let musik = document.getElementById("musik");
 
-    if (el.requestFullscreen) {
-        el.requestFullscreen();
-    }
+    /* WENN NICHT IM VOLLBILD */
 
-    musik.play(); // <- WICHTIG: direkt im Klick
-
-    document.getElementById("exitBtn").style.display = "block";
-}
-
-function closeFullscreen() {
-
-    if (document.exitFullscreen) {
-        document.exitFullscreen();
-    }
-
-    document.getElementById("exitBtn").style.display = "none";
-}
-
-/* EXIT FIX wenn ESC gedrückt */
-document.addEventListener("fullscreenchange", () => {
     if (!document.fullscreenElement) {
-        document.getElementById("exitBtn").style.display = "none";
+
+        if (el.requestFullscreen) {
+            el.requestFullscreen();
+        }
+
+        musik.play();
+
     }
+
+    /* WENN IM VOLLBILD */
+
+    else {
+
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+
+    }
+}
+
+/* BUTTON TEXT ÄNDERN */
+
+document.addEventListener("fullscreenchange", () => {
+
+    let btn = document.getElementById("fullscreenBtn");
+
+    if (document.fullscreenElement) {
+
+        btn.innerText = "Schließen";
+
+    } else {
+
+        btn.innerText = "Vollbild";
+
+    }
+
 });
 
 </script>
