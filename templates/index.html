@@ -106,6 +106,16 @@
             color: #333;
         }
 
+        .info a {
+            color: #111;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .info a:hover {
+            text-decoration: underline;
+        }
+
         /* ===== CTA ===== */
 
         .cta {
@@ -139,7 +149,6 @@
 
 <body>
 
-<!-- HERO -->
 <section class="hero" id="hero">
 
     {% for bild in bilder %}
@@ -156,7 +165,6 @@
 
 </section>
 
-<!-- INFO -->
 <section class="info">
 
     <h1>Schützenverein Herbrechtingen</h1>
@@ -165,11 +173,10 @@
 
     <p>Dienstag: 19–22 Uhr | Samstag: 15–18 Uhr | Sonntag: 09:30–12 Uhr</p>
 
-    <p>
-        <a href="https://www.sg-herbrechtingen.de" target="_blank">
-            www.sg-herbrechtingen.de
-        </a>
-    </p>
+    <br>
+    <p><strong>Hast du Fragen?</strong></p>
+    <p>Bei Fragen für die Jugend: <a href="mailto:rj.mack@freenet.de">rj.mack@freenet.de</a></p>
+    <p>Bei weiteren Fragen: <a href="mailto:schuetzenverein.sgh.hdh@gmail.com">schuetzenverein.sgh.hdh@gmail.com</a></p>
 
     <div class="cta">
         <h2>Komm vorbei!</h2>
@@ -182,7 +189,6 @@
 
 </section>
 
-<!-- MUSIC -->
 <audio id="musik" loop>
     <source src="{{ url_for('static', filename='music/song.mp3') }}" type="audio/mpeg">
 </audio>
