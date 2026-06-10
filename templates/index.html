@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de">
 
@@ -21,6 +20,8 @@
             overflow-x: hidden;
         }
 
+        /* ===== HERO ===== */
+
         .hero {
             width: 100%;
             height: 100vh;
@@ -41,6 +42,8 @@
         .slide.active {
             opacity: 1;
         }
+
+        /* ===== ARROWS ===== */
 
         .btn {
             position: absolute;
@@ -67,6 +70,8 @@
             right: 15px;
         }
 
+        /* ===== FULLSCREEN ===== */
+
         .fullscreen {
             position: absolute;
             bottom: 20px;
@@ -82,6 +87,8 @@
             cursor: pointer;
             font-size: 16px;
         }
+
+        /* ===== INFO ===== */
 
         .info {
             padding: 80px 20px;
@@ -99,6 +106,8 @@
             color: #333;
         }
 
+        /* ===== CTA ===== */
+
         .cta {
             margin-top: 40px;
             display: inline-block;
@@ -111,6 +120,16 @@
             margin-bottom: 10px;
         }
 
+        .cta button {
+            margin-top: 10px;
+            padding: 10px 18px;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
         audio {
             display: none;
         }
@@ -120,6 +139,7 @@
 
 <body>
 
+<!-- HERO -->
 <section class="hero" id="hero">
 
     {% for bild in bilder %}
@@ -136,6 +156,7 @@
 
 </section>
 
+<!-- INFO -->
 <section class="info">
 
     <h1>Schützenverein Herbrechtingen</h1>
@@ -150,56 +171,117 @@
         </a>
     </p>
 
+    <div class="cta">
+        <h2>Komm vorbei!</h2>
+        <p>Erlebe Schießsport und Gemeinschaft live.</p>
 
-<div class="cta">
-
-    <h2>🎯 Komm vorbei!</h2>
-
-    <p>
-        Erlebe Schießsport, Gemeinschaft und Spaß im Verein.
-    </p>
-
-    <div style="
-        margin-top:25px;
-        padding:20px;
-        background:#f8f8f8;
-        border-radius:15px;
-        text-align:left;
-        max-width:600px;
-        margin-left:auto;
-        margin-right:auto;
-    ">
-
-        <h3 style="margin-bottom:15px; text-align:center;">
-            📬 Hast du Fragen?
-        </h3>
-
-        <div style="
-            background:white;
-            padding:15px;
-            border-radius:12px;
-            margin-bottom:12px;
-            box-shadow:0 2px 8px rgba(0,0,0,0.08);
-        ">
-            <strong>👦 Jugendleitung</strong><br>
-            <a href="mailto:rj.mack@freenet.de">
-                rj.mack@freenet.de
-            </a>
-        </div>
-
-        <div style="
-            background:white;
-            padding:15px;
-            border-radius:12px;
-            box-shadow:0 2px 8px rgba(0,0,0,0.08);
-        ">
-            <strong>📧 Allgemeine Fragen</strong><br>
-            <a href="mailto:schuetzenverein.sgh.hdh@gmail.com">
-                schuetzenverein.sgh.hdh@gmail.com
-            </a>
-        </div>
-
+        <button onclick="window.location.href='https://www.sg-herbrechtingen.de'">
+            Jetzt informieren
+        </button>
     </div>
 
-</div>
+</section>
 
+<!-- MUSIC -->
+<audio id="musik" loop>
+    <source src="{{ url_for('static', filename='music/song.mp3') }}" type="audio/mpeg">
+</audio>
+
+<script>
+
+let slides = document.querySelectorAll(".slide");
+let index = 0;
+
+/* AUTO SLIDE */
+
+setInterval(() => {
+    nextSlide();
+}, 3000);
+
+/* SHOW SLIDE */
+
+function showSlide(i) {
+
+    slides.forEach(s => s.classList.remove("active"));
+
+    slides[i].classList.add("active");
+}
+
+/* NEXT */
+
+function nextSlide() {
+
+    index++;
+
+    if (index >= slides.length) {
+        index = 0;
+    }
+
+    showSlide(index);
+}
+
+/* PREV */
+
+function prevSlide() {
+
+    index--;
+
+    if (index < 0) {
+        index = slides.length - 1;
+    }
+
+    showSlide(index);
+}
+
+/* FULLSCREEN TOGGLE */
+
+function toggleFullscreen() {
+
+    let el = document.getElementById("hero");
+    let musik = document.getElementById("musik");
+
+    /* WENN NICHT IM VOLLBILD */
+
+    if (!document.fullscreenElement) {
+
+        if (el.requestFullscreen) {
+            el.requestFullscreen();
+        }
+
+        musik.play();
+
+    }
+
+    /* WENN IM VOLLBILD */
+
+    else {
+
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+
+    }
+}
+
+/* BUTTON TEXT ÄNDERN */
+
+document.addEventListener("fullscreenchange", () => {
+
+    let btn = document.getElementById("fullscreenBtn");
+
+    if (document.fullscreenElement) {
+
+        btn.innerText = "Schließen";
+
+    } else {
+
+        btn.innerText = "Vollbild";
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
